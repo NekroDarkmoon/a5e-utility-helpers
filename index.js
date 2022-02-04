@@ -1,7 +1,9 @@
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                               Imports and Constants
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+import * as actorUtils from './scripts/actorUtils.js';
 import * as minorUtils from './scripts/minorUtils.js';
+import * as distanceUtils from './scripts/distanceUtils.js';
 
 //
 export const moduleName = 'a5e-utility-helpers';
@@ -31,6 +33,23 @@ Hooks.once('ready', async function () {
 async function setupApi() {
 	window.A5EUtils = {
 		getCanvas: minorUtils.getCanvas,
+
+		getDistance: distanceUtils.getDistance,
+		isAdjacent: distanceUtils.isAdjacent,
+
+		getConditions: actorUtils.getConditions,
+		getConditionImmunities: actorUtils.getConditionImmunities,
+		getDamageImmunities: actorUtils.getDamageImmunities,
+		getDamageResistances: actorUtils.getDamageResistances,
+		getDamageVulnerabilities: actorUtils.getDamageVulnerabilities,
+		getLanguages: actorUtils.getLanguages,
+		getSenses: actorUtils.getSenses,
+		hasSpellPoints: actorUtils.hasSpellPoints,
+		hasSpellSlots: actorUtils.hasSpellSlots,
+		isBloodied: actorUtils.isBloodied,
+		isWounded: actorUtils.isWounded,
+		isSpellCaster: actorUtils.isSpellCaster,
+		isUnconscious: actorUtils.isUnconscious,
 	};
 }
 
