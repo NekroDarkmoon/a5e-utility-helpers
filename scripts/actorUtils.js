@@ -59,6 +59,24 @@ export function getSenses(token) {
 }
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//                                    Get SpellSlots
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+export function getSpellSlots(token, spellLevel = null) {
+	const slots = token.data.actorData.data.spellResources?.slots;
+	if (!slots) return false;
+
+	if (!spellLevel) {
+		const available = Object.values(slots).reduce((a, b) => a + b.current, 0);
+		if (available > 0) return true;
+		else return false;
+	}
+
+	// TODO: Finish this
+	if (!slots[spellLevel]) return false;
+	return slots[spellLevel].current > 0;
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                                    hasSpellSlots
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function hasSpellPoints(token) {
@@ -71,18 +89,18 @@ export function hasSpellPoints(token) {
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                                    hasSpellSlots
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-export function hasSpellSlots(token, spellLevel = -1) {
+export function hasSpellSlots(token, spellLevel = null) {
 	const slots = token.data.actorData.data.spellResources?.slots;
 	if (!slots) return false;
 
-	if (spellLevel === -1) {
-		const available = Object.values(slots).reduce((a, b) => a + b.current, 0);
+	if (!spellLevel) {
+		const available = Object.values(slots).reduce((a, b) => a + b.max, 0);
 		if (available > 0) return true;
 		else return false;
 	}
 
 	if (!slots[spellLevel]) return false;
-	return slots[spellLevel].current > 0;
+	return slots[spellLevel].max > 0;
 }
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -92,15 +110,19 @@ export function hasSpellSlots(token, spellLevel = -1) {
  * @returns {Boolean}
  */
 export function isBloodied(token) {
-	const effects = getConditions(token);
+	const hp = token.data.actorData.attributes.hp;
+	if (hp.value < hp.max * 0.5) return true;
 
-	return effects.filter(e => e.label === 'Bloodied').length !== 0;
+	return false;
 }
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                                     isWounded
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-export function isWounded(token, hpBased = true) {}
+export function isWounded(token, hpBased = true) {
+	const hp = token.data.actorData.attributes.hp;
+	return hp.value < hp.max;
+}
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                                     isSpellCaster
@@ -113,8 +135,10 @@ export function isSpellCaster(token) {
 //                                   isUnconscious
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function isUnconscious(token, hpBased = true) {
-	const effect = getConditions(token).filter(e => e.label === 'Unconscious');
-	const hpBelowZero = token.data.actorData.data.attributes.hp < 1;
+	const effect = getConditions(token).filter(
+		e => e.label.toLowerCase() === 'unconscious'
+	);
+	const hpBelowZero = token.data.actorData.data?.attributes.hp < 1;
 
 	if (hpBased) return hpBelowZero || effect.length !== 0;
 	else return effect.length !== 0;
