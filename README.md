@@ -22,7 +22,6 @@ The following functions can be accessed with the namespace `A5EUtils`.
 #### Token Utility Functions
 
 - **getConditions(token: Token, fullObject: Boolean = false): Array<String> || Array<Object>** --> Returns an array of conditions. Optionally returns an array of condition objects if `fullObject` is set to `true`.
-
 - **getConditionImmunities(token: Token): Array<String>** --> Returns an array of conditions immunities for a token.
 - **getDamageImmunities(token: Token): Array<String>** --> Returns an array of damage immunities for a token.
 - **getDamageResistances(token: Token): Array<String>** --> Returns an array of damage resistances for a token.
