@@ -127,6 +127,15 @@ export function getSenses(token) {
 // }
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//                                    hasCondition
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+export function hasCondition(token, condition) {
+	/** @type {Array} */
+	const conditions = getConditions(token).map(c => c.toLowerCase());
+
+	return conditions.includes(condition.toLowerCase());
+}
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                                    hasSpellSlots
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function hasSpellPoints(token) {

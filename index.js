@@ -45,6 +45,7 @@ async function setupApi() {
 		getLanguages: tokenUtils.getLanguages,
 		getSenses: tokenUtils.getSenses,
 		getTokenData: tokenUtils.getTokenData,
+		hasCondition: tokenUtils.hasCondition,
 		hasSpellPoints: tokenUtils.hasSpellPoints,
 		hasSpellSlots: tokenUtils.hasSpellSlots,
 		isBloodied: tokenUtils.isBloodied,
