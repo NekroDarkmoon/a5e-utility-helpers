@@ -4,10 +4,10 @@
 import { moduleName, moduleTag } from '../index.js';
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//                                    	isPC
+//                                Helper: Get Token Data
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-export function _getData(token) {
-	if (char.actor.data.type === 'character') return token.actor.data;
+export function getTokenData(token) {
+	if (token.actor.data.type === 'character') return token.actor.data;
 	else return token.data.actorData;
 }
 
@@ -18,15 +18,16 @@ export function _getData(token) {
  * @returns {Array<String> || Array<Object>} conditions
  */
 export function getConditions(token, fullObject = false) {
-	let effects;
-	if (isPC(token)) effects = token.actor.data.effects;
-	else effects = token.data.actorData.effects;
+	let effects = getTokenData(token).effects;
+
+	if (effects instanceof Map)
+		effects = Array.from(effects.values()).map(e => e.data);
 
 	if (!effects) return [];
 	if (fullObject) return effects;
 
 	return effects.map(
-		e => CONFIG.A5E.conditions[e.label.toLowerCase()] || e.label
+		e => game.i18n.localize(CONFIG.A5E.conditions[e.label]) || e.label
 	);
 }
 
@@ -34,12 +35,12 @@ export function getConditions(token, fullObject = false) {
 //                               Get Condition Immunities
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function getConditionImmunities(token) {
-	let traits;
-	if (isPC(token)) traits = token.actor.data.data.traits;
-	else traits = token.data.actorData.data.traits;
+	const traits = getTokenData(token).data.traits;
 
 	return (
-		traits?.conditionImmunities.map(t => CONFIG.A5E.damageTypes[t] || t) || []
+		traits?.conditionImmunities.map(
+			t => game.i18n.localize(CONFIG.A5E.damageTypes[t]) || t
+		) || []
 	);
 }
 
@@ -47,12 +48,12 @@ export function getConditionImmunities(token) {
 //                               Get Condition Immunities
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function getDamageImmunities(token) {
-	let traits;
-	if (isPC(token)) traits = token.actor.data.data.traits;
-	else traits = token.data.actorData.data.traits;
+	const traits = getTokenData(token).data.traits;
 
 	return (
-		traits?.damageImmunities.map(t => CONFIG.A5E.damageTypes[t] || t) || []
+		traits?.damageImmunities.map(
+			t => game.i18n.localize(CONFIG.A5E.damageTypes[t]) || t
+		) || []
 	);
 }
 
@@ -60,12 +61,12 @@ export function getDamageImmunities(token) {
 //                                  Get Resistances
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function getDamageResistances(token) {
-	let traits;
-	if (isPC(token)) traits = token.actor.data.data.traits;
-	else traits = token.data.actorData.data.traits;
+	const traits = getTokenData(token).data.traits;
 
 	return (
-		traits?.damageResistances.map(t => CONFIG.A5E.damageTypes[t] || t) || []
+		traits?.damageResistances.map(
+			t => game.i18n.localize(CONFIG.A5E.damageTypes[t]) || t
+		) || []
 	);
 }
 
@@ -73,12 +74,12 @@ export function getDamageResistances(token) {
 //                                 Get Vulnerabilities
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function getDamageVulnerabilities(token) {
-	let traits;
-	if (isPC(token)) traits = token.actor.data.data.traits;
-	else traits = token.data.actorData.data.traits;
+	const traits = getTokenData(token).data.traits;
 
 	return (
-		traits?.damageVulnerabilities.map(t => CONFIG.A5E.damageTypes[t] || t) || []
+		traits?.damageVulnerabilities.map(
+			t => game.i18n.localize(CONFIG.A5E.damageTypes[t]) || t
+		) || []
 	);
 }
 
@@ -86,22 +87,22 @@ export function getDamageVulnerabilities(token) {
 //                                 Get Vulnerabilities
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function getLanguages(token) {
-	let profs;
-	if (isPC(token)) profs = token.actor.data.data.proficiencies;
-	else profs = token.data.actorData.data.proficiencies;
+	const profs = getTokenData(token).data.proficiencies;
 
-	return profs?.languages.map(l => CONFIG.A5E.languages[l] || l) || [];
+	return (
+		profs?.languages.map(
+			l => game.i18n.localize(CONFIG.A5E.languages[l]) || l
+		) || []
+	);
 }
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                                 Get Vulnerabilities
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function getSenses(token) {
-	let attributes;
-	if (isPC(token)) attributes = token.actor.data.data.attributes;
-	else attributes = token.data.actorData.data.attributes;
+	const attributes = getTokenData(token).data.attributes;
 
-	return attributes?.senses.map(s => CONFIG.A5E.senses[s] || s) || [];
+	return attributes?.senses || [];
 }
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -129,12 +130,9 @@ export function getSenses(token) {
 //                                    hasSpellSlots
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function hasSpellPoints(token) {
-	let points;
-
-	if (isPC(token)) points = token.actor.data.data.spellResources?.points;
-	else points = token.data.actorData.data.spellResources?.points;
-
+	const points = getTokenData(token).data.spellResources?.points;
 	if (!points) return false;
+
 	return points.current > 0;
 }
 
@@ -142,11 +140,7 @@ export function hasSpellPoints(token) {
 //                                    hasSpellSlots
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function hasSpellSlots(token, spellLevel = null) {
-	let slots;
-
-	if (isPC(token)) slots = token.actor.data.data.spellResources?.slots;
-	else slots = token.data.actorData.data.spellResources?.slots;
-
+	const slots = getTokenData(token).data.spellResources?.slots;
 	if (!slots) return false;
 
 	if (!spellLevel) {
@@ -166,9 +160,7 @@ export function hasSpellSlots(token, spellLevel = null) {
  * @returns {Boolean}
  */
 export function isBloodied(token) {
-	let hp;
-	if (isPC(is)) hp = token.actor.data.data.attributes.hp;
-	else hp = token.data.actorData.attributes.hp;
+	const hp = getTokenData(token).data.attributes.hp;
 
 	return hp.value < hp.max * 0.5;
 }
@@ -177,9 +169,7 @@ export function isBloodied(token) {
 //                                     isWounded
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function isWounded(token) {
-	let hp;
-	if (isPC(is)) hp = token.actor.data.data.attributes.hp;
-	else hp = token.data.actorData.attributes.hp;
+	const hp = getTokenData(token).data.attributes.hp;
 
 	return hp.value < hp.max;
 }
@@ -188,10 +178,7 @@ export function isWounded(token) {
 //                                     isSpellCaster
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function isSpellCaster(token) {
-	let spellResources;
-
-	if (isPC(token)) spellResources = token.actor.data.data.spellResources;
-	else spellResources = token.data.actorData.data.spellResources;
+	const spellResources = getTokenData(token).data.spellResources;
 
 	return spellResources ? true : false;
 }
@@ -201,12 +188,10 @@ export function isSpellCaster(token) {
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 export function isUnconscious(token, hpBased = true) {
 	const effect = getConditions(token).filter(
-		e => e.label.toLowerCase() === CONFIG.A5E.conditions.unconscious
+		e => e === game.i18n.localize(CONFIG.A5E.conditions.unconscious)
 	);
 
-	let hp;
-	if (isPC(is)) hp = token.actor.data.data.attributes.hp;
-	else hp = token.data.actorData.attributes.hp;
+	const hp = getTokenData(token).data.attributes.hp;
 
 	const hpBelowZero = hp.value < 1;
 

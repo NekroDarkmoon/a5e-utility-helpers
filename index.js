@@ -1,7 +1,7 @@
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //                               Imports and Constants
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-import * as actorUtils from './scripts/actorUtils.js';
+import * as tokenUtils from './scripts/tokenUtils.js';
 import * as minorUtils from './scripts/minorUtils.js';
 import * as distanceUtils from './scripts/distanceUtils.js';
 
@@ -37,19 +37,20 @@ async function setupApi() {
 		getDistance: distanceUtils.getDistance,
 		isAdjacent: distanceUtils.isAdjacent,
 
-		getConditions: actorUtils.getConditions,
-		getConditionImmunities: actorUtils.getConditionImmunities,
-		getDamageImmunities: actorUtils.getDamageImmunities,
-		getDamageResistances: actorUtils.getDamageResistances,
-		getDamageVulnerabilities: actorUtils.getDamageVulnerabilities,
-		getLanguages: actorUtils.getLanguages,
-		getSenses: actorUtils.getSenses,
-		hasSpellPoints: actorUtils.hasSpellPoints,
-		hasSpellSlots: actorUtils.hasSpellSlots,
-		isBloodied: actorUtils.isBloodied,
-		isWounded: actorUtils.isWounded,
-		isSpellCaster: actorUtils.isSpellCaster,
-		isUnconscious: actorUtils.isUnconscious,
+		getConditions: tokenUtils.getConditions,
+		getConditionImmunities: tokenUtils.getConditionImmunities,
+		getDamageImmunities: tokenUtils.getDamageImmunities,
+		getDamageResistances: tokenUtils.getDamageResistances,
+		getDamageVulnerabilities: tokenUtils.getDamageVulnerabilities,
+		getLanguages: tokenUtils.getLanguages,
+		getSenses: tokenUtils.getSenses,
+		getTokenData: tokenUtils.getTokenData,
+		hasSpellPoints: tokenUtils.hasSpellPoints,
+		hasSpellSlots: tokenUtils.hasSpellSlots,
+		isBloodied: tokenUtils.isBloodied,
+		isWounded: tokenUtils.isWounded,
+		isSpellCaster: tokenUtils.isSpellCaster,
+		isUnconscious: tokenUtils.isUnconscious,
 	};
 }
 
